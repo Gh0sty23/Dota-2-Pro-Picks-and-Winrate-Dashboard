@@ -39,7 +39,7 @@ def set_page_selection(page):
 with st.sidebar:
 
     # Sidebar Title (Change this with your project's title)
-    st.title('Dashboard Template')
+    st.title('Dota 2 Pro Meta Team Maker and Win rate predictor"')
 
     # Page Button Navigation
     st.subheader("Pages")
@@ -83,7 +83,11 @@ dataset = pd.read_csv("Current_Pro_meta.csv")
 if st.session_state.page_selection == "about":
     st.header("ℹ️ About")
 
-    # Your content for the ABOUT page goes here
+    st.markdown("""
+        Just a streamtlit web app that shows some **Exploratory Data Analysis (EDA)**, **Data Pre-processing** and usage of **Clustering and Linear Regression** 
+        to make a Dota 2 team compostion and predict a team's win rate based on the type of heroes in the team
+    
+    """)
 
 # Dataset Page
 elif st.session_state.page_selection == "dataset":
