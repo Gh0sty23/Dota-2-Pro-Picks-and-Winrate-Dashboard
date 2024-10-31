@@ -39,7 +39,7 @@ def set_page_selection(page):
 with st.sidebar:
 
     # Sidebar Title (Change this with your project's title)
-    st.title('Dota 2 Pro Meta Team Maker and Win rate predictor"')
+    st.title('Dota 2 Pro Meta Team Maker and Win rate predictor')
 
     # Page Button Navigation
     st.subheader("Pages")
