@@ -63,7 +63,7 @@ with st.sidebar:
 # Data
 
 # Load data
-dataset = pd.read_csv("data/IRIS.csv")
+dataset = pd.read_csv("Current_Pro_meta.csv")
 
 #######################
 
