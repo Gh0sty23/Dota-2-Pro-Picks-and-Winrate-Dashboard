@@ -18,7 +18,7 @@ from sklearn.metrics import mean_squared_error
 #######################
 # Page configuration
 st.set_page_config(
-    page_title="Dashboard Template", # Replace this with your Project's Title
+    page_title="Dota 2 Pro Meta Team Maker and Win rate predictor", # Replace this with your Project's Title
     page_icon="assets/icon.png", # You may replace this with a custom icon or emoji related to your project
     layout="wide",
     initial_sidebar_state="expanded")
