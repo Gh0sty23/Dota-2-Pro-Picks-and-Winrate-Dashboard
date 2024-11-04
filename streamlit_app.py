@@ -14,6 +14,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import MinMaxScaler
 
 #######################
 # Page configuration
@@ -75,6 +76,20 @@ with st.sidebar:
 # Load data
 dataset = pd.read_csv("Current_Pro_meta.csv")
 
+# 1 SPLIT ROLES
+dataset['Roles_List'] = dataset['Roles'].str.split(',')
+
+# 2 PICK RATE
+total_picks = dataset['Times Picked'].sum()
+dataset['Pick Rate (%)'] = (dataset['Times Picked'] / total_picks) * 100
+
+# 3 BAN RATE
+total_bans= dataset['Times Banned'].sum()
+dataset['Ban Rate (%)'] = (dataset['Times Banned'] / total_bans) * 100
+
+# 4 CONTESTATION RATE
+dataset['Contestation Rate (%)'] = dataset['Pick Rate (%)'] + dataset['Ban Rate (%)']
+
 #######################
 
 # Pages
@@ -122,6 +137,33 @@ elif st.session_state.page_selection == "data_cleaning":
     st.header("🧼 Data Cleaning and Data Pre-processing")
 
     # Your content for the DATA CLEANING / PREPROCESSING page goes here
+    st.dataframe(dataset.head())
+
+    st.write("""
+    Since we'll mostly ever be looking only at win rates, pick rates and ban rates, 
+             we will be dropping most every other column except for those that we need.
+    """)
+
+    roles_split = dataset['Roles'].str.get_dummies(sep=', ')
+    dataset = pd.concat([dataset.drop(columns=['Roles']), roles_split], axis=1)
+
+    # Drop unnecessary columns
+    columns_to_drop = ['Unnamed: 0', 'Primary Attribute', 'Attack Type', 
+                       'Attack Range', 'Roles', 'Total Pro wins', 
+                       'Times Picked', 'Times Banned', 'Roles_List',
+                       'Niche Hero?'
+                       ]
+    dataset = dataset.drop(columns=[col for col in columns_to_drop if col in dataset.columns])
+    st.dataframe(dataset.head())
+
+    features = ['Contestation Rate (%)','Pick Rate (%)', 'Ban Rate (%)', 'Win Rate']
+
+    new = dataset[features]
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(new)
+    X_scaled_df = pd.DataFrame(X_scaled, columns=features)
+    
+    st.dataframe(X_scaled_df.head())
 
 # Machine Learning Page
 elif st.session_state.page_selection == "machine_learning":
