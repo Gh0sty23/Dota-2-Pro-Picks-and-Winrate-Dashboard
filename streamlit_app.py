@@ -119,10 +119,55 @@ if st.session_state.page_selection == "about":
 elif st.session_state.page_selection == "dataset":
     st.header("📊 Dataset")
 
-    st.write("IRIS Flower Dataset")
+    st.write("Dota 2 Heroes Professional Meta Analysis")
     st.write("")
 
-    # Your content for your DATASET page goes here
+    ## Your content for your DATASET page goes here
+
+    st.write("""
+    This page presents data on Dota 2 heroes based on their professional match performance. Primary attributes, attack types, roles, and match performance metrics like win rate, pick, and ban counts are all included in each hero's statistics.
+    """)
+
+    st.write("""
+    The dataset offers information on the viability of heroes with a variety of roles, including Carry, Support, Durable, Nuker, and more, in competitive play. Additionally, it contains clues about niche heroes who might have specific applications.
+
+    """)
+
+    st.subheader("Dataset Columns")
+    st.write("""
+    The columns in this dataset are:
+    - **Name**: Hero name
+    - **Primary Attribute**: Main attribute (Strength, Agility, or Intelligence)
+    - **Attack Type**: Whether the hero is Melee or Ranged
+    - **Attack Range**: Distance at which the hero can attack
+    - **Roles**: Various roles assigned to the hero
+    - **Total Pro Wins**: Number of professional wins
+    - **Times Picked**: Number of picks in professional matches
+    - **Times Banned**: Number of bans in professional matches
+    - **Win Rate**: Win rate percentage in professional matches
+    - **Niche Hero?**: Indicates if the hero is considered niche
+    """)
+
+    #Load DataSet
+    st.header("Dataset Preview")
+    dataset = pd.read_csv('Current_Pro_meta.csv')
+    dataset
+
+    #Describe
+    st.header("Descriptive Statistics")
+    dataset.describe()
+
+    st.write("""
+    The summary statistics table provides a breakdown of the main performance metrics:
+
+    - **Attack Range**: Indicates whether heroes are melee or ranged, with higher values for ranged heroes.
+    - **Total Pro Wins**: Shows the average number of professional wins for each hero, with variability indicating consistency or volatility in performance.
+    - **Times Picked**: Reflects hero popularity in professional matches, with high values indicating frequently chosen heroes.
+    - **Times Banned**: Points to how often heroes are banned, potentially due to their perceived strength or specific meta relevance.
+    - **Win Rate**: Average win rate across matches, showing which heroes have the highest success rates.
+    
+    This analysis helps highlight which heroes dominate the competitive scene and which are more situational picks.
+    """)
 
 # EDA Page
 elif st.session_state.page_selection == "eda":
