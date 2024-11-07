@@ -1,19 +1,13 @@
-# 🎈 Blank app template
+# Dota 2 Team Win Predictor and Team maker
 
-A simple Streamlit app template for you to modify!
+A streamlit app that makes use of a pro tournament dataset of win rates, ban rates, pick rates etc. to come to conclusions on what the best team composition would look like and what the winrate of a team would be depending on its composition.
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+Made by 
+Manguerra, Marius Andre
+Perez, Dharl Russel
+Lagman, Seth
+Panes, Nathan
+Metran, Josh
 
-### How to run it on your own machine
 
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
    ```
