@@ -469,7 +469,57 @@ elif st.session_state.page_selection == "prediction":
     st.header("👀 Prediction")
 
     # Your content for the PREDICTION page goes here
+    col_pred = st.columns((1.5, 3, 3), gap='medium')
 
+    # Initialize session state for clearing results
+    if 'clear' not in st.session_state:
+        st.session_state.clear = False
+
+    with col_pred[0]:
+        with st.expander('Options', expanded=True):
+            show_dataset = st.checkbox('Show Dataset')
+            clear_results = st.button('Clear Results', key='clear_results')
+
+            if clear_results:
+                st.session_state.clear = True
+
+    with col_pred[1]:
+        st.markdown("#### Linear Regression")
+
+        # Hero names for the selectbox
+        hero_names = [
+            'Abaddon', 'Alchemist', 'Ancient Apparition', 'Anti-Mage', 'Arc Warden', 'Axe', 'Bane', 'Batrider', 'Beastmaster', 'Bloodseeker', 'Bounty Hunter',
+            'Brewmaster', 'Bristleback', 'Broodmother', 'Centaur Warrunner', 'Chaos Knight', 'Chen', 'Clinkz', 'Clockwerk', 'Crystal Maiden',
+            'Dark Seer', 'Dark Willow', 'Dawnbreaker', 'Dazzle', 'Death Prophet', 'Disruptor', 'Doom', 'Dragon Knight', 'Drow Ranger', 'Earth Spirit',
+            'Earthshaker', 'Elder Titan', 'Ember Spirit', 'Enchantress', 'Enigma', 'Faceless Void', 'Grimstroke', 'Gyrocopter', 'Hoodwink', 'Huskar', 
+            'Invoker', 'Io', 'Jakiro', 'Juggernaut', 'Keeper of the Light', 'Kunkka', 'Legion Commander', 'Leshrac', 'Lich', 'Lifestealer', 'Lina', 'Lion',
+            'Lone Druid', 'Luna', 'Lycan', 'Magnus', 'Marci', 'Mars', 'Medusa', 'Meepo', 'Mirana', 'Monkey King', 'Morphling', 'Muerta', 'Naga Siren',
+            "Nature's Prophet", 'Necrophos', 'Night Stalker', 'Nyx Assassin', 'Ogre Magi', 'Omniknight', 'Oracle', 'Outworld Destroyer', 'Pangolier',
+            'Phantom Assassin', 'Phantom Lancer', 'Phoenix', 'Primal Beast', 'Puck', 'Pudge', 'Pugna', 'Queen of Pain', 'Razor', 'Riki', 'Rubick', 'Sand King',
+            'Shadow Demon', 'Shadow Fiend', 'Shadow Shaman', 'Silencer', 'Skywrath Mage', 'Slardar', 'Slark', 'Snapfire', 'Sniper', 'Spectre',
+            'Spirit Breaker', 'Storm Spirit', 'Sven', 'Techies', 'Templar Assassin', 'Terrorblade', 'Tidehunter', 'Timbersaw', 'Tinker', 'Tiny',
+            'Treant Protector', 'Troll Warlord', 'Tusk', 'Underlord', 'Undying', 'Ursa', 'Vengeful Spirit', 'Venomancer', 'Viper', 'Visage', 'Void Spirit',
+            'Warlock', 'Weaver', 'Windranger', 'Winter Wyvern', 'Witch Doctor', 'Wraith King', 'Zeus'
+        ]
+
+        # Team Composition's Winrate to be Predicted
+        selected_hero_1 = st.selectbox("Choose hero 1:", hero_names)
+        selected_hero_2 = st.selectbox("Choose hero 2:", hero_names)
+        selected_hero_3 = st.selectbox("Choose hero 3:", hero_names)
+        selected_hero_4 = st.selectbox("Choose hero 4:", hero_names)
+        selected_hero_5 = st.selectbox("Choose hero 5:", hero_names)
+        
+        if st.button('Detect', key='dt_detect'):
+            # Prepare the input data for prediction
+            dt_input_data = [[selected_hero_1, selected_hero_2, selected_hero_3, selected_hero_4, selected_hero_5]]
+            model_prediction = model.predict(X_test)
+            st.markdown(f'The winrate is: `{predicted_win_rate}`')
+
+        if show_dataset:
+            # Display the dataset
+            st.subheader("Dataset")
+            st.dataframe(dataset, use_container_width=True, hide_index=True)
+            
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
     st.header("📝 Conclusion")
