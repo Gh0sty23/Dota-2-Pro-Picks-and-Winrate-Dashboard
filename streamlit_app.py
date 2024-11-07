@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans
 
 #######################
 # Page configuration
@@ -25,8 +26,8 @@ st.set_page_config(
     initial_sidebar_state="expanded")
 
 alt.themes.enable("dark")
-
 #######################
+
 
 # Initialize page_selection in session state if not already set
 if 'page_selection' not in st.session_state:
@@ -357,7 +358,112 @@ elif st.session_state.page_selection == "data_cleaning":
 elif st.session_state.page_selection == "machine_learning":
     st.header("🤖 Machine Learning")
 
-    # Your content for the MACHINE LEARNING page goes here
+    st.subheader("Linear Regression Model")
+
+    st.markdown("""
+    On this page, we will build a **Linear Regression** model to predict the win rate of a Dota 2 team composition.
+    We will use features such as **Pick Rate**, **Ban Rate**, and **Contestation Rate** to train the model.
+    Linear regression will help us establish a relationship between these features and the win rate of the team.
+    """)
+
+    X = dataset[['Pick Rate (%)', 'Ban Rate (%)', 'Contestation Rate (%)']]
+    y = dataset['Win Rate']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    mse = mean_squared_error(y_test, y_pred)
+    st.write(f"Mean Squared Error (MSE): {mse:.2f}")
+    st.write(f"Predicted Win Rate: {y_pred.mean():.2f}")
+
+    st.markdown("### Actual vs Predicted Win Rate")
+    plt.figure(figsize=(10, 6))
+    plt.scatter(y_test, y_pred)
+    plt.plot([0, 100], [0, 100], color='red', linestyle='--')
+    plt.title("Actual vs Predicted Win Rate")
+    plt.xlabel("Actual Win Rate")
+    plt.ylabel("Predicted Win Rate")
+    st.pyplot(plt)
+
+    st.markdown("""
+    We also made use of Linear regression to predict the win rate of a Team composition
+    based on the win rates based on contestation rate and the many different roles.
+    """)
+
+    st.subheader("K-Means Model")
+
+    st.markdown(""" In this section, we will apply a **K-Means Clustering** algorithm to identify hero clusters based on their performance metrics, 
+    including **Contestation Rate**, **Pick Rate**, **Ban Rate**, and **Win Rate**. 
+    We will then use these clusters to generate an optimized team composition for Dota 2 by selecting heroes from different clusters while ensuring the usual team structure of 3 carry heroes and 2 supports.""")   
+
+    roles_split = dataset['Roles'].str.get_dummies(sep=', ')
+    dataset = pd.concat([dataset.drop(columns=['Roles']), roles_split], axis=1)
+    dataset = dataset.drop(columns=['Unnamed: 0', 'Primary Attribute', 'Attack Type', 'Attack Range', 
+                                    'Total Pro wins', 'Times Picked', 'Times Banned', 'Roles_List'])
+
+    features = ['Contestation Rate (%)', 'Pick Rate (%)', 'Ban Rate (%)', 'Win Rate']
+    X = dataset[features]
+
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    kmeans = KMeans(n_clusters=5, random_state=42)
+    kmeans.fit(X_scaled)
+    dataset['Cluster'] = kmeans.labels_
+
+    def select_team(dataset):
+        team = []
+        clusters_represented = set()
+        num_carries = 0
+        num_supports = 0
+
+        for cluster in range(5):
+            hero_options = dataset[dataset.Cluster == cluster].sort_values('Contestation Rate (%)', ascending=False)
+
+            for index in hero_options.index:
+                hero = hero_options.loc[index]
+
+                if 'Carry' in hero.index and hero['Carry'] and num_carries < 3:
+                    team.append(hero['Name'])
+                    clusters_represented.add(cluster)
+                    num_carries += 1
+                    break
+                elif 'Support' in hero.index and hero['Support'] and num_supports < 2:
+                    team.append(hero['Name'])
+                    clusters_represented.add(cluster)
+                    num_supports += 1
+                    break
+            else:
+                remaining_heroes = dataset[~dataset.Name.isin(team)].sort_values('Win Rate', ascending=False)
+                for index in remaining_heroes.index:
+                    hero = remaining_heroes.loc[index]
+                    if 'Carry' in hero.index and hero['Carry'] and num_carries < 3:
+                        team.append(hero['Name'])
+                        num_carries += 1
+                        break
+                    elif 'Support' in hero.index and hero['Support'] and num_supports < 2:
+                        team.append(hero['Name'])
+                        num_supports += 1
+                        break
+                else:
+                    hero = dataset[~dataset.Name.isin(team)].sample(1).iloc[0]
+                    team.append(hero['Name'])
+        return team
+
+    if st.button("Generate Team"):
+        team = select_team(dataset)
+        team_df = pd.DataFrame(team, columns=['Selected Heroes'])
+        st.write("Selected team:")
+        st.table(team_df)
+
+        st.markdown("""Here is now the Machine learning models that we came up with using the dataset.
+                   Using clustering it comes up with a team composition based on the win rate, contestation rate, 
+                   ban rate and pick rate of the pro teams. It also will account for usual team composition of 3 carry heroes and 2 supports.""")
+    
 
 # Prediction Page
 elif st.session_state.page_selection == "prediction":
