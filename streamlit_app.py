@@ -69,8 +69,7 @@ with st.sidebar:
 
     # Project Members
     st.subheader("Members")
-    st.markdown("1. Elon Musk\n2. Jeff Bezos\n3. Sam Altman\n4. Mark Zuckerberg")
-
+    st.markdown("1. Marius Andre Manguerra\n2. Dharl Russel Perez\n3. Seth Lagman\n4. Nathan Panes\n5. Josh Metran")
 #######################
 # Data
 
