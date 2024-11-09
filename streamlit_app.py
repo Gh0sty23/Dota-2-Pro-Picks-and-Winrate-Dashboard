@@ -113,7 +113,7 @@ if st.session_state.page_selection == "about":
     various roles of the heroes in the team.
     """)
     st.markdown("```Prediction``` - ")
-    st.markdown("```Conclusion``` - ")
+    st.markdown("```Conclusion``` - Summary and conclusion of all the findings within the dataset, EDA, and models")
 
 # Dataset Page
 elif st.session_state.page_selection == "dataset":
@@ -523,5 +523,20 @@ elif st.session_state.page_selection == "prediction":
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
     st.header("📝 Conclusion")
+    st.markdown("""In this notebook we can find the data of the win rate, pick rate, ban rate and the contestation
+                 rate of dota 2 heroes within a tournament. We found that Supports were highly sought after using 
+                this dataset as well as initiators. Supports also had the highest winrate within the tournament. 
+                We found as well that Vengeful spirit and Invoker were the 2 most contested heroes in the 
+                tournament so that would mean they must've been strong during that patch. We find as well that the
+                 most contested heroes do actually win a lot and the least contested ones fair less so there is a 
+                reason for the pros to pick these heroes during that patch. With that being said, this is outdated 
+                information due to this being an old patch so this is not a good way to find a team comp that could 
+                work in today's Dota 2. With that as well, The data IS limited with the fact that we do not account
+                 for countering and matchups between different heroes as different heroes are good at countering 
+                different heroes as well. Since it's only based on win rate, pick rate, and ban rate, It isnt very 
+                accurate. With that said, we have learned a lot with this dataset and that there is usually a 
+                reason why a character is picked a lot as we can see that the most picked heroes do actually have 
+                positive winrates.
 
+                """)
     # Your content for the CONCLUSION page goes here
