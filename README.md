@@ -19,7 +19,6 @@ Dataset
 https://www.kaggle.com/datasets/nihalbarua/dota2-competitive-picks?resource=download
 
 Pages: 
-1. Dataset - A comprehensive dataset containing information about Dota 2 heroes picked in tournaments, including pick rates, win rates, and various performance metrics.
 
 EDA - Exploratory Data Analysis of the Dota 2 hero dataset, showcasing insights such as hero pick frequencies, average win rates, synergy with other heroes, and tournament-specific trends.
 
