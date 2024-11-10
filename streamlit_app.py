@@ -464,11 +464,52 @@ elif st.session_state.page_selection == "machine_learning":
                    ban rate and pick rate of the pro teams. It also will account for usual team composition of 3 carry heroes and 2 supports.""")
     
 
-# Prediction Page
+#  Prediction Page
 elif st.session_state.page_selection == "prediction":
     st.header("👀 Prediction")
 
-    # Your content for the PREDICTION page goes here
+# Your content for the PREDICTION page goes here
+
+    # 1 SPLIT ROLES
+    dataset['Roles_List'] = dataset['Roles'].str.split(',')
+
+    # 2 PICK RATE
+    total_picks = dataset['Times Picked'].sum()
+    dataset['Pick Rate (%)'] = (dataset['Times Picked'] / total_picks) * 100
+
+    # 3 BAN RATE
+    total_bans= dataset['Times Banned'].sum()
+    dataset['Ban Rate (%)'] = (dataset['Times Banned'] / total_bans) * 100
+
+    # 4 CONTESTATION RATE
+    dataset['Contestation Rate (%)'] = dataset['Pick Rate (%)'] + dataset['Ban Rate (%)']
+    roles_split = dataset['Roles'].str.get_dummies(sep=', ')
+    dataset = pd.concat([dataset.drop(columns=['Roles']), roles_split], axis=1)
+
+    # Drop unnecessary columns
+    columns_to_drop = ['Unnamed: 0', 'Primary Attribute', 'Attack Type', 
+                       'Attack Range', 'Roles', 'Total Pro wins', 
+                       'Times Picked', 'Times Banned', 'Roles_List',
+                       'Niche Hero?'
+                       ]
+    dataset = dataset.drop(columns=[col for col in columns_to_drop if col in dataset.columns])
+
+    features = ['Contestation Rate (%)','Pick Rate (%)', 'Ban Rate (%)', 'Win Rate']
+
+    new = dataset[features]
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(new)
+
+    X = dataset[['Contestation Rate (%)','Carry', 'Support', 'Disabler', 'Nuker', 'Pusher','Initiator','Escape','Durable']]
+    y = dataset['Win Rate']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
     col_pred = st.columns((1.5, 3, 3), gap='medium')
 
     # Initialize session state for clearing results
@@ -484,36 +525,23 @@ elif st.session_state.page_selection == "prediction":
                 st.session_state.clear = True
 
     with col_pred[1]:
-        st.markdown("#### Linear Regression")
+        st.markdown("#### Linear Regression (Predicting Winrate)")
 
-        # Hero names for the selectbox
-        hero_names = [
-            'Abaddon', 'Alchemist', 'Ancient Apparition', 'Anti-Mage', 'Arc Warden', 'Axe', 'Bane', 'Batrider', 'Beastmaster', 'Bloodseeker', 'Bounty Hunter',
-            'Brewmaster', 'Bristleback', 'Broodmother', 'Centaur Warrunner', 'Chaos Knight', 'Chen', 'Clinkz', 'Clockwerk', 'Crystal Maiden',
-            'Dark Seer', 'Dark Willow', 'Dawnbreaker', 'Dazzle', 'Death Prophet', 'Disruptor', 'Doom', 'Dragon Knight', 'Drow Ranger', 'Earth Spirit',
-            'Earthshaker', 'Elder Titan', 'Ember Spirit', 'Enchantress', 'Enigma', 'Faceless Void', 'Grimstroke', 'Gyrocopter', 'Hoodwink', 'Huskar', 
-            'Invoker', 'Io', 'Jakiro', 'Juggernaut', 'Keeper of the Light', 'Kunkka', 'Legion Commander', 'Leshrac', 'Lich', 'Lifestealer', 'Lina', 'Lion',
-            'Lone Druid', 'Luna', 'Lycan', 'Magnus', 'Marci', 'Mars', 'Medusa', 'Meepo', 'Mirana', 'Monkey King', 'Morphling', 'Muerta', 'Naga Siren',
-            "Nature's Prophet", 'Necrophos', 'Night Stalker', 'Nyx Assassin', 'Ogre Magi', 'Omniknight', 'Oracle', 'Outworld Destroyer', 'Pangolier',
-            'Phantom Assassin', 'Phantom Lancer', 'Phoenix', 'Primal Beast', 'Puck', 'Pudge', 'Pugna', 'Queen of Pain', 'Razor', 'Riki', 'Rubick', 'Sand King',
-            'Shadow Demon', 'Shadow Fiend', 'Shadow Shaman', 'Silencer', 'Skywrath Mage', 'Slardar', 'Slark', 'Snapfire', 'Sniper', 'Spectre',
-            'Spirit Breaker', 'Storm Spirit', 'Sven', 'Techies', 'Templar Assassin', 'Terrorblade', 'Tidehunter', 'Timbersaw', 'Tinker', 'Tiny',
-            'Treant Protector', 'Troll Warlord', 'Tusk', 'Underlord', 'Undying', 'Ursa', 'Vengeful Spirit', 'Venomancer', 'Viper', 'Visage', 'Void Spirit',
-            'Warlock', 'Weaver', 'Windranger', 'Winter Wyvern', 'Witch Doctor', 'Wraith King', 'Zeus'
-        ]
+        contestation_rate = st.number_input('Contestation Rate', min_value=0.0, max_value=5.0, step=1.00, key='contestation_rate', value=0.0 if st.session_state.clear else st.session_state.get('contestation_rate', 0.0))
+        carry = st.number_input('Number of Carry', min_value=0.0, max_value=5.0, step=1.00, key='carry', value=0.0 if st.session_state.clear else st.session_state.get('carry', 0.0))
+        support = st.number_input('Number of Support', min_value=0.0, max_value=5.0, step=1.00, key='support', value=0.0 if st.session_state.clear else st.session_state.get('support', 0.0))
+        disabler = st.number_input('Number of Disabler', min_value=0.0, max_value=5.0, step=1.00, key='disabler', value=0.0 if st.session_state.clear else st.session_state.get('disabler', 0.0))
+        nuker = st.number_input('Number of Nuker', min_value=0.0, max_value=5.0, step=1.00, key='nuker', value=0.0 if st.session_state.clear else st.session_state.get('nuker', 0.0))
+        pusher = st.number_input('Number of Pusher', min_value=0.0, max_value=5.0, step=1.00, key='pusher', value=0.0 if st.session_state.clear else st.session_state.get('pusher', 0.0))
+        initiator = st.number_input('Number of Initiator', min_value=0.0, max_value=5.0, step=1.00, key='initiator', value=0.0 if st.session_state.clear else st.session_state.get('initiator', 0.0))
+        escape = st.number_input('Number of Escape', min_value=0.0, max_value=5.0, step=1.00, key='escape', value=0.0 if st.session_state.clear else st.session_state.get('escape', 0.0))
+        durable = st.number_input('Number of Durable', min_value=0.0, max_value=5.0, step=1.00, key='durable', value=0.0 if st.session_state.clear else st.session_state.get('durable', 0.0))
 
-        # Team Composition's Winrate to be Predicted
-        selected_hero_1 = st.selectbox("Choose hero 1:", hero_names)
-        selected_hero_2 = st.selectbox("Choose hero 2:", hero_names)
-        selected_hero_3 = st.selectbox("Choose hero 3:", hero_names)
-        selected_hero_4 = st.selectbox("Choose hero 4:", hero_names)
-        selected_hero_5 = st.selectbox("Choose hero 5:", hero_names)
-        
         if st.button('Detect', key='dt_detect'):
             # Prepare the input data for prediction
-            dt_input_data = [[selected_hero_1, selected_hero_2, selected_hero_3, selected_hero_4, selected_hero_5]]
-            model_prediction = model.predict(X_test)
-            st.markdown(f'The winrate is: `{predicted_win_rate}`')
+            new_composition = pd.DataFrame({'Contestation Rate (%)': [contestation_rate] ,'Carry': [carry], 'Support': [support],'Disabler' : [disabler], 'Nuker': [nuker], 'Pusher': [pusher], 'Initiator': [initiator], 'Escape': [escape], 'Durable': [durable]})
+            predicted_win_rate = model.predict(new_composition)
+            st.markdown(f"Predicted Win Rate: {predicted_win_rate}")
 
         if show_dataset:
             # Display the dataset
