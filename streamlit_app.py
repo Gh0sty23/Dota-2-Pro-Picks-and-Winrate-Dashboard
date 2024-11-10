@@ -112,7 +112,7 @@ if st.session_state.page_selection == "about":
     The model also considers the common team structure of 3 carry heroes and 2 support heroes. Additionally, we applied Linear Regression to predict the win rate of a team composition, factoring in contestation rates and the 
     various roles of the heroes in the team.
     """)
-    st.markdown("```Prediction``` - ")
+    st.markdown("```Prediction``` - Predicts winrate of a team composition")
     st.markdown("```Conclusion``` - Summary and conclusion of all the findings within the dataset, EDA, and models")
 
 # Dataset Page
