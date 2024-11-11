@@ -551,20 +551,29 @@ elif st.session_state.page_selection == "prediction":
 # Conclusions Page
 elif st.session_state.page_selection == "conclusion":
     st.header("📝 Conclusion")
-    st.markdown("""In this notebook we can find the data of the win rate, pick rate, ban rate and the contestation
-                 rate of dota 2 heroes within a tournament. We found that Supports were highly sought after using 
-                this dataset as well as initiators. Supports also had the highest winrate within the tournament. 
-                We found as well that Vengeful spirit and Invoker were the 2 most contested heroes in the 
-                tournament so that would mean they must've been strong during that patch. We find as well that the
-                 most contested heroes do actually win a lot and the least contested ones fair less so there is a 
-                reason for the pros to pick these heroes during that patch. With that being said, this is outdated 
-                information due to this being an old patch so this is not a good way to find a team comp that could 
-                work in today's Dota 2. With that as well, The data IS limited with the fact that we do not account
-                 for countering and matchups between different heroes as different heroes are good at countering 
-                different heroes as well. Since it's only based on win rate, pick rate, and ban rate, It isnt very 
-                accurate. With that said, we have learned a lot with this dataset and that there is usually a 
-                reason why a character is picked a lot as we can see that the most picked heroes do actually have 
-                positive winrates.
+    st.markdown("""
+                    
+        Through exploratory data analysis and training of two classification models (`Decision Tree Classifier` and `Random Forest Regressor`) on the **Iris Flower dataset**, the key insights and observations are:
 
-                """)
+        #### 1. 📊 **Exploratory data analysis**:
+        - The dataset showed the many different winrates, pickrates and banrates of each hero during a pro dota 2 tournament. We find that there are some heroes that are picked more often and banned more often than some heroes and the popularly picked heroes actually have positive win rates. 
+        - The dataset shows as well the roles of each Hero and their main attributes so that we can learn more about the effectiveness of each role. We find that the most effective role was the Initiator and Support role. 
+
+        #### 2. 📝 **Model Training (Linear Regression)**:
+        - The Linear Regression model Reached conclusions with 38% mean squared error which does mean it is quite inaccurate. It predicts a team's winrate based on the winrates of each separate role within the game. 
+        - Since the dataset also doesn't account for Counter Matchups and Player knowledge, It also furthers the inaccuracy of this model.
+
+        #### 3. 📈 **Model Training (K-Means Clustering)**:
+
+        - With this model it just takes the dataset and suggests a team composition based on the individual win rate of the hero as well as accounting for having the standard team composition of 3 carry heroes and 2 Support heroes
+        - As mentioned before, It does not account for counter matchups and player skill so it is not too accurate. 
+
+        ##### **Final Conclusion** :
+        While this Dataset has provided us with a lot of good insights into pro player picks, hero win rates and what hero was good during a tournament patch, It was not a good dataset to use machine learning model with as it was very limited with its data. 
+
+        It did not have any data for Matchup win rates I.e Vengeful spirit vs Earthshaker or Invoker vs Sniper. It also does not account for item meta as well which can also change the game meta due to certain item hero synergies. 
+
+        The models that we have trained for this project is very limited and can only serve as a suggestion and not as full proof win immediate prediction so all in all, We have learnt a lot about Hero metas but was not able to make a confidently good Machine learning model due to the chosen dataset's limited nature.
+                    
+     """)
     # Your content for the CONCLUSION page goes here
